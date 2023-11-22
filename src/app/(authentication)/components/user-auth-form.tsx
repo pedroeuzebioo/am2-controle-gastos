@@ -7,15 +7,39 @@ import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const { toast } = useToast();
+  const emailRef = React.useRef<HTMLInputElement>(null);
+  const passwordRef = React.useRef<HTMLInputElement>(null);
 
   async function handleLoginEmailClick(event: React.SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
+
+    const email = emailRef.current?.value || "";
+    const password = passwordRef.current?.value || "";
+
+    if (email === "" && password === "") {
+      toast({
+        variant: "destructive",
+        title: "Ops! algo deu errado.",
+        description: "E-mail ou senha incorretos",
+        action: (
+          <ToastAction altText="Tente novamente">Tente novamente</ToastAction>
+        ),
+      });
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+      return;
+    }
 
     setTimeout(() => {
       setIsLoading(false);
@@ -39,6 +63,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              ref={emailRef}
             />
           </div>
           <div className="grid gap-1">
@@ -47,12 +72,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </Label>
             <Input
               className="bg-muted focus-visible:ring-accent"
-              id="senha"
+              id="password"
               placeholder="Digite sua senha"
               type="password"
               autoCapitalize="none"
               autoCorrect="off"
               disabled={isLoading}
+              ref={passwordRef}
             />
           </div>
           <Button disabled={isLoading} className="hover:bg-secondary">
@@ -63,6 +89,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </Button>
         </div>
       </form>
+      <Toaster />
     </div>
   );
 }
