@@ -13,16 +13,8 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  async function onSubmit(event: React.SyntheticEvent) {
+  async function handleLoginEmailClick(event: React.SyntheticEvent) {
     event.preventDefault();
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
-
-  async function handleButtonGoogleClick() {
     setIsLoading(true);
 
     setTimeout(() => {
@@ -32,14 +24,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleLoginEmailClick}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
               E-mail
             </Label>
             <Input
-              className="focus-visible:ring-accent"
+              className="bg-muted focus-visible:ring-accent"
               id="email"
               placeholder="nome@exemplo.com"
               type="email"
@@ -49,36 +41,28 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               disabled={isLoading}
             />
           </div>
+          <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="senha">
+              Senha
+            </Label>
+            <Input
+              className="bg-muted focus-visible:ring-accent"
+              id="senha"
+              placeholder="Digite sua senha"
+              type="password"
+              autoCapitalize="none"
+              autoCorrect="off"
+              disabled={isLoading}
+            />
+          </div>
           <Button disabled={isLoading} className="hover:bg-secondary">
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Entrar com o e-mail
+            Entrar
           </Button>
         </div>
       </form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            OU CONTINUE COM
-          </span>
-        </div>
-      </div>
-      <Button
-        variant="outline"
-        disabled={isLoading}
-        onClick={handleButtonGoogleClick}
-      >
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.google className="mr-2 h-4 w-4" />
-        )}{" "}
-        Google
-      </Button>
     </div>
   );
 }
